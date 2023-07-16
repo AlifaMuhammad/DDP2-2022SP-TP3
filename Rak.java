@@ -17,11 +17,17 @@ public class Rak {
     // TODO : Implementasi method tambahObat
     public void tambahObat(Obat obat, int index) {
         this.daftarObat[index] = obat;
+
     }
     
     // TODO : Implementasi method printRak
     public void printRak(){
-        return;
+        for (int i = 0; i < size; i++) {
+            Obat obat = daftarObat[i];
+            if (obat != null) {
+                System.out.println(i + 1 +);
+            }
+        }
     }
 
     // TODO : Implementasi method getListObat
