@@ -1,9 +1,13 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class HaloDDP {
     public static void main(String[] args) {
         int BASE_PRICE = 5000; 
         Scanner input = new Scanner(System.in);
+        List<String> transactionHistory = new ArrayList<>();
+        int ulang = 0;
 
         System.out.println("Selamat datang Haloddp. Berapa ukuran lemari obat hari ini? (max row 5) ");
         String masukan = input.next();
@@ -13,11 +17,11 @@ public class HaloDDP {
         int kolom = Character.getNumericValue(b);
         String [][] mylist = new String[baris][kolom];
         String [] mylist2 = new String[baris+1];
-        String []printer = new String[b];
         if (baris < 1 || kolom < 1 || baris > 5) {
             System.out.println("Ukuran lemari tidak valid!");
             System.exit(0);
         }
+        Lemari lemari = new Lemari(kolom);
         // TODO : Implementasi validasi input ukuran lemari
 
         // TODO : Buat objek lemari dengan ukuran yang sudah ditentukan
@@ -27,10 +31,17 @@ public class HaloDDP {
         for (int i = 1; i <= baris; i++) {
             System.out.print("Rak ke-"+i+": ");
             String kategori = input.next();
-            mylist2[i] = kategori; 
-            System.out.println("Rak ke-"+i+" adalah rak obat "+ kategori);         
+            if (kategori.equals(mylist2[i-1])){
+                System.out.println("Kategori rak tidak valid");
+                i--;
+            }
+            else {
+                mylist2[i] = kategori; 
+                System.out.println("Rak ke-"+i+" adalah rak obat "+ kategori);
+                lemari.addRak(new Rak(kolom, kategori), i-1); 
+            }       
         }
-        cetak(mylist2, mylist, baris);    
+        lemari.print();
 
         while (true) {
             Scanner input3 = new Scanner(System.in);
@@ -50,27 +61,82 @@ public class HaloDDP {
                 String namaobat = input.next();
                 System.out.print("Masukkan kategori obat: ");
                 String kategoriobat = input.next();
+                int rakIndex = -1;
                 for (int i = 1; i <= baris; i++) {
-                    if (kategoriobat == mylist2[i]) {
+                    if (mylist2[i].equals(kategoriobat)) {
                         System.out.println("Kategori obat valid");
+                        rakIndex = i-1;
+                        break;
                     }
+                }
+                if (rakIndex == -1) {
+                    System.out.println("Kategori obat tidak valid");
+                    continue;
                 }
                 System.out.print("Masukkan posisi obat: ");
                 String posisi = input.next();
                 String[] size = posisi.split(",");
                 int depan = Integer.parseInt(size[0]);
                 int belakang = Integer.parseInt(size[1]);
+                if (depan > baris || belakang > kolom) {
+                    System.out.println("Posisi tidak ada di lemari");
+                    continue;
+                }
+                int index = 0;
+                for (int i = 1; i<=mylist2.length; i++){
+                    if(mylist2[i].equals(kategoriobat)){
+                        index = i;
+                        break;
+                    }
+                }
+                if (depan != index ){
+                    System.out.println("Rak bukan untuk kategori obat " + kategoriobat);
+                    continue;
+                }
                 System.out.print("Masukkan stok obat: ");
                 int stok = input2.nextInt();
+                Obat obat = new Obat(namaobat, stok, kategoriobat);
+                lemari.getRak(rakIndex).tambahObat(obat, belakang-1);
 
             } else if (menu.equals("2")) {
                 // TODO : Implementasi print obat
-                cetak(mylist2, mylist, baris);
+                lemari.print();
             } else if (menu.equals("3")) {
                 // TODO : Implementasi beli obat
+                ulang++;
+                Scanner input4 = new Scanner(System.in);
+                System.out.print("Obat apa yang ingin dibeli? ");
+                String namaObat = input4.nextLine();
+                Obat obat = lemari.searchObat(namaObat);
+                if (obat == null) {
+                    System.out.println("Obat tidak ditemukan");
+                    continue;
+                }
+                System.out.print("Ingin beli berapa banyak? ");
+                int jumlah = input4.nextInt();
+                boolean success = lemari.beliObat(obat, jumlah);
+                if (success) {
+                    int totalHarga = obat.getHarga() * jumlah;
+                    String transaction = obat.getNama() + " - " + jumlah + " - " + totalHarga;
+                    transactionHistory.add(transaction);
+                    System.out.println("Berhasil membeli obat");
+                } else {
+                    System.out.println("Stok obat tidak mencukupi");
+                }
             } else if (menu.equals("99")){
                 // TODO : Implementasi keluar
-                break;
+                if (ulang > 0){
+                    System.out.println("Riwayat transaksi hari ini\n");
+                    System.out.println("No. Nama - Jumlah - Total Harga");
+                    for (int i = 0; i < transactionHistory.size(); i++) {
+                        System.out.println((i + 1) + ". " + transactionHistory.get(i));
+                    }
+                    break;}
+                else{
+                    System.out.println("Tetap semangat. Besok pasti akan jauh lebih baik!");
+                    System.exit(0);
+                }
+            
             } else {
                 System.out.println("Menu tidak tersedia");
             }
@@ -78,21 +144,5 @@ public class HaloDDP {
 
         input.close();
         System.out.println("Terima kasih telah menggunakan Haloddp!");
-    }
-    public static void cetak(String []list, String[][]list2, int x){
-
-        for (int j = 0; j < x; j++) {
-            System.out.println(list[j+1]);
-            System.out.println("==================");
-            for (int i = 0; i < x; i++) {
-                if (list2[j][i] != null) {
-                    System.out.print(list2[j][i]+ " | ");
-                } else {
-                    System.out.print("kosong | ");
-                }
-            }
-            System.out.println();
-            System.out.println("==================");
-        }
     }
 }
