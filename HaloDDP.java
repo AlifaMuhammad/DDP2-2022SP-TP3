@@ -15,19 +15,15 @@ public class HaloDDP {
         char b = masukan.charAt(2);
         int baris = Character.getNumericValue(a);
         int kolom = Character.getNumericValue(b);
-        String [][] mylist = new String[baris][kolom];
         String [] mylist2 = new String[baris+1];
         if (baris < 1 || kolom < 1 || baris > 5) {
             System.out.println("Ukuran lemari tidak valid!");
             System.exit(0);
         }
         Lemari lemari = new Lemari(kolom);
-        // TODO : Implementasi validasi input ukuran lemari
-
-        // TODO : Buat objek lemari dengan ukuran yang sudah ditentukan
 
         System.out.println("Silahkan tentukan kategori obat untuk setiap rak");
-        // TODO : Implementasi input kategori rak\
+
         for (int i = 1; i <= baris; i++) {
             System.out.print("Rak ke-"+i+": ");
             String kategori = input.next();
@@ -55,7 +51,7 @@ public class HaloDDP {
             String menu = input3.nextLine();
 
             if (menu.equals("1")) {
-                // TODO : Implementasi input obat
+
                 Scanner input2 = new Scanner(System.in);
                 System.out.print("Masukkan nama obat: ");
                 String namaobat = input.next();
@@ -99,10 +95,8 @@ public class HaloDDP {
                 lemari.getRak(rakIndex).tambahObat(obat, belakang-1);
 
             } else if (menu.equals("2")) {
-                // TODO : Implementasi print obat
                 lemari.print();
             } else if (menu.equals("3")) {
-                // TODO : Implementasi beli obat
                 ulang++;
                 Scanner input4 = new Scanner(System.in);
                 System.out.print("Obat apa yang ingin dibeli? ");
@@ -115,6 +109,7 @@ public class HaloDDP {
                 System.out.print("Ingin beli berapa banyak? ");
                 int jumlah = input4.nextInt();
                 boolean success = lemari.beliObat(obat, jumlah);
+
                 if (success) {
                     int totalHarga = obat.getHarga() * jumlah;
                     String transaction = obat.getNama() + " - " + jumlah + " - " + totalHarga;
@@ -124,7 +119,6 @@ public class HaloDDP {
                     System.out.println("Stok obat tidak mencukupi");
                 }
             } else if (menu.equals("99")){
-                // TODO : Implementasi keluar
                 if (ulang > 0){
                     System.out.println("Riwayat transaksi hari ini\n");
                     System.out.println("No. Nama - Jumlah - Total Harga");
