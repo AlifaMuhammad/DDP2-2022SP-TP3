@@ -31,16 +31,13 @@ public class RakTes {
     }
 
     @Test
-    public void testGetListObat() {
+    public void testsearchobat() {
         Obat obat1 = new Obat("Paracetamol", 20, "panadol");
-        Obat obat2 = new Obat("Amoxicillin", 20, "vitamin");
 
-        rak.tambahObat(obat1, 0);
-        rak.tambahObat(obat2, 2);
+        String expected = null;
+        Obat actual = rak.searchObat("paracetamol");
 
-        Obat[] expectedDaftarObat = null;
-        Obat[] actualDaftarObat = rak.getListObat();
-        assertArrayEquals(expectedDaftarObat, actualDaftarObat);
+        assertEquals(expected, actual);
     }
 
     @Test
